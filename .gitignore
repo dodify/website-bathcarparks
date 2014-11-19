@@ -1,3 +1,4 @@
 # Do not include images and data cache
 /Images/*
 data.txt
+images.zip
