@@ -118,8 +118,8 @@ function fetch() {
         <title>Bath Car Parks</title>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
         <meta name="description" content="Bath Car Parks tells you how many car park spaces are available in all of Bath's biggest car parks. You'll never have to waste time driving around in circles looking for parking space again!" />
-		<meta name="keywords" content="Bath parking, Bath car park, Bath parking lot, Parking in Bath, Southgate Parking" />
-		<meta name="author" content="www.dodify.com" />
+        <meta name="keywords" content="Bath parking, Bath car park, Bath parking lot, Parking in Bath, Southgate Parking" />
+        <meta name="author" content="www.dodify.com" />
         <meta name="google-site-verification" content="lWurGZbU5Znf2MxvH4Rbx_HLUXKoKKBD4iEms2099Io" />
         <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
         <link href="Images/favicon.ico" rel="shortcut icon" type="image/x-icon" />
