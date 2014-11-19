@@ -75,7 +75,7 @@ $(document).ready(function() {
 
     // Set external links
     $('a[rel="external"]').each(function() {
-		$(this).attr('target', '_blank');
+        $(this).attr('target', '_blank');
     }); 
 });
 
