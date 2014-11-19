@@ -50,7 +50,7 @@ file_put_contents(DATA_FILE, $ctime . "\n" . json_encode($cps));
 /**
  * Fetch data from Socrata and clean.
  *
- * Builds an HTT GET request for the Socrata JSON end point for the given 
+ * Builds an HTTP GET request for the Socrata JSON end point for the given 
  * URL and cleans/removes known errors in the data.
  *
  * @return      mixed       Returns the data in a PHP object or NULL on error
@@ -79,19 +79,15 @@ function fetch() {
         foreach($cps as $cp) {
         
             // Custom colour logic
-            $per = 100 - ceil($cp->percentage / 10) * 10;
-            switch($per) {
-                case ($per > 40):
-                    $per = 100;
-                    break;
-                case ($per > 20):
-                    $per = 50;
-                    break;
-                default:
-                    $per = 0;
+            $cp->available = $cp->capacity - $cp->occupancy;
+            if($cp->available > 50) {
+                $cp->cper = 'p100'; 
+            } elseif($cp->available > 10) {
+                $cp->cper = 'p50'; 
+            } else {
+                $cp->cper = 'p0';
             }
-            $cp->cper = $per;
-            $cp->icon = 'p' . $per . '.png';        
+            $cp->icon = $cp->cper . '.png';   
         
             // Sometimes location is missing
             if(!property_exists($cp, "location")) {
@@ -147,13 +143,12 @@ function fetch() {
                     <?php
                         // Output each car park as a table for left column
                         foreach($cps as $cp) {
-                            $aval = $cp->capacity - $cp->occupancy;
                             $lupt = substr($cp->lastupdate, 11);
                             $cpName = str_replace("CP", "Car Park", $cp->name); 
                             echo <<<HTML
 <tr id="{$cp->id}" class="cp">
     <td>$cpName</td>
-    <td class="aval"><span class="sq p{$cp->cper}">$aval</span></td>
+    <td class="aval"><span class="sq {$cp->cper}">{$cp->available}</span></td>
     <td><img src="Images/arrow.png" alt="Arrow" /></td>
 </tr>
 <tr class="info even {$cp->id}">
