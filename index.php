@@ -14,7 +14,7 @@
 
 // Global settings
 define('DATA_URL' , 'https://data.bathhacked.org/resource/u3w2-9yme');
-define('TOKEN'    , 'lOjW9PYE43jvDHNPs0WsxsCdU');
+define('TOKEN'    , '[PUT YOUR TOKEN HERE]');
 define('DATA_FILE', 'data.txt');
 define('TIMEOUT'  , 300); // 5 minutes
 
@@ -38,7 +38,7 @@ if(!file_exists(DATA_FILE)) {
     }
 }
 
-// Show error is something went wrong
+// Show error if something went wrong
 if(is_null($cps)) {
     echo "<h1>We are sorry but an error has occurred</h1>";
     exit;
@@ -50,7 +50,7 @@ file_put_contents(DATA_FILE, $ctime . "\n" . json_encode($cps));
 /**
  * Fetch data from Socrata and clean.
  *
- * Builds an HTT GET request using the Socrata json end point for the given 
+ * Builds an HTT GET request for the Socrata JSON end point for the given 
  * URL and cleans/removes known errors in the data.
  *
  * @return      mixed       Returns the data in a PHP object or NULL on error
