@@ -80,6 +80,11 @@ function fetch() {
         
             // Custom colour logic
             $cp->available = $cp->capacity - $cp->occupancy;
+        	
+            if($cp->available < 0) {
+                $cp->available = 0;    
+            }
+            
             if($cp->available > 50) {
                 $cp->cper = 'p100'; 
             } elseif($cp->available > 10) {
