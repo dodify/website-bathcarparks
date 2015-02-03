@@ -99,11 +99,16 @@ function fetch() {
             
                 // Hard coded locations as missing from data store
                 if($cp->name == "Podium CP") {
-                    $loc = array(
+                    $cp->location = array(
                         "latitude"  => "51.384322",
                         "longitude" => "-2.359572"
                     );
-                    $cp->location = $loc;
+                }
+                if($cp->name == "Newbridge P+R") {
+                    $cp->location = array(
+                        "latitude"  => "51.390423",
+                        "longitude" => "-2.405904"
+                    );
                 }
             }
         }

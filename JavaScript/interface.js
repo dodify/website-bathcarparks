@@ -29,19 +29,20 @@ $(document).ready(function() {
     // Add car parks
     for(var i = 0; i < cps.length; i++) {
         var cp = cps[i];
-        var marker = new google.maps.Marker({ 
-            position: new google.maps.LatLng(
-                cp.location.latitude, 
-                cp.location.longitude
-            ),
-            map:   map,
-            id:    cp.id,
-            title: cp.name,
-            icon:  iconBase + cp.icon,
-            iconF: cp.icon,
-        });
-        markers[cp.id] = marker;
-        
+        if(typeof cp.location !== 'undefined') {        
+            var marker = new google.maps.Marker({ 
+                position: new google.maps.LatLng(
+                    cp.location.latitude, 
+                    cp.location.longitude
+                ),
+                map:   map,
+                id:    cp.id,
+                title: cp.name,
+                icon:  iconBase + cp.icon,
+                iconF: cp.icon,
+            });
+            markers[cp.id] = marker;
+        }
         // Click event on marker
         google.maps.event.addListener(marker, 'click', function() {
             selectCp(this.id);
