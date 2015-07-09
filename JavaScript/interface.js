@@ -59,10 +59,10 @@ $(document).ready(function() {
                 var tId   = lId.substr(0, lId.length - 3);
                 var cLati = pos.coords.latitude;
                 var cLong = pos.coords.longitude;
-                var pLati = markers[tId].position.D;
-                var pLong = markers[tId].position.k;
+                var pLati = markers[tId].position.lat();
+                var pLong = markers[tId].position.lng();
                 $(this).attr('href', 'https://www.google.com/maps/dir/' + 
-                    cLati + ',' + cLong + '/' + pLong + ',' + pLati);
+                    cLati + ',' + cLong + '/' + pLati + ',' + pLong);
             });
         });
     } else {
