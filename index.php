@@ -13,8 +13,7 @@
  */
 
 // Global settings
-define('DATA_URL' , 'https://data.bathhacked.org/resource/u3w2-9yme');
-define('TOKEN'    , '[PUT YOUR TOKEN HERE]');
+define('DATA_URL' , 'https://www.bhdata.co.uk/api/datasets/8/rows');
 define('DATA_FILE', 'data.txt');
 define('TIMEOUT'  , 300); // 5 minutes
 
@@ -26,7 +25,7 @@ if(!file_exists(DATA_FILE)) {
     $cps = fetch();
 } else {
     $file = fopen(DATA_FILE, "r");
-    $time = fgets($file);
+    $time = trim(fgets($file));
     
     // If data is older than the time out fetch again
     if($ctime - $time > TIMEOUT) {
@@ -56,35 +55,19 @@ file_put_contents(DATA_FILE, $ctime . "\n" . json_encode($cps));
  * @return      mixed       Returns the data in a PHP object or NULL on error
  */
 function fetch() {
+    $cps = json_decode(file_get_contents(DATA_URL));
 
-    // Build request
-    $opts = array(
-        'http' => array(
-            'method'=> "GET",
-            'header'=>  "Accept: application/json\r\n" .
-                        "Content-type: application/json\r\n" .
-                        "X-App-Token: " . TOKEN
-        )
-    );
-    $c = stream_context_create($opts);
-    
-    // Fetch data   
-    $cps = json_decode(
-        str_replace(array("\r", "\n"), '', 
-        @file_get_contents(DATA_URL . '.json', false, $c))
-    );
-    
     // Fix/improve data
     if(!is_null($cps)) {
-        foreach($cps as $cp) {
-        
+        foreach($cps->data as $cp) {
+
             // Custom colour logic
             $cp->available = $cp->capacity - $cp->occupancy;
-        	
+
             if($cp->available < 0) {
-                $cp->available = 0;    
+                $cp->available = 0;
             }
-            
+
             if($cp->available > 50) {
                 $cp->cper = 'p100'; 
             } elseif($cp->available > 10) {
@@ -92,28 +75,10 @@ function fetch() {
             } else {
                 $cp->cper = 'p0';
             }
-            $cp->icon = $cp->cper . '.png';   
-        
-            // Sometimes location is missing
-            if(!property_exists($cp, "location")) {
-            
-                // Hard coded locations as missing from data store
-                if($cp->name == "Podium CP") {
-                    $cp->location = array(
-                        "latitude"  => "51.384322",
-                        "longitude" => "-2.359572"
-                    );
-                }
-                if($cp->name == "Newbridge P+R") {
-                    $cp->location = array(
-                        "latitude"  => "51.390423",
-                        "longitude" => "-2.405904"
-                    );
-                }
-            }
+            $cp->icon = $cp->cper . '.png';
         }
     }
-    
+
     return $cps;
 }
 
@@ -135,7 +100,7 @@ function fetch() {
         <link href="Style/main.css" rel="stylesheet" type="text/css" />
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js" type="text/javascript"></script>
         <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDTwa1H-mf39xfqvvsa4K1tABbx2G7WWlk&amp;sensor=false" type="text/javascript"></script>
-        <script type="text/javascript">var cps = <?= json_encode($cps) ?>;</script>
+        <script type="text/javascript">var cps = <?= json_encode($cps->data) ?>;</script>
         <script src="JavaScript/interface.js" type="text/javascript"></script>
     </head>
     <body>
@@ -152,7 +117,7 @@ function fetch() {
                 <tbody>
                     <?php
                         // Output each car park as a table for left column
-                        foreach($cps as $cp) {
+                        foreach($cps->data as $cp) {
                             $lupt = substr($cp->lastupdate, 11);
                             $cpName = str_replace("CP", "Car Park", $cp->name); 
                             echo <<<HTML
