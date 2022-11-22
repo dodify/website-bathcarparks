@@ -13,7 +13,7 @@
  */
 
 // Global settings
-define('DATA_URL' , 'https://www.bhdata.co.uk/api/datasets/8/rows');
+define('DATA_URL' , 'https://data.bathhacked.org/api/datasets/8/rows');
 define('DATA_FILE', 'data.txt');
 define('TIMEOUT'  , 300); // 5 minutes
 
@@ -55,7 +55,14 @@ file_put_contents(DATA_FILE, $ctime . "\n" . json_encode($cps));
  * @return      mixed       Returns the data in a PHP object or NULL on error
  */
 function fetch() {
-    $cps = json_decode(file_get_contents(DATA_URL));
+    $cps = json_decode(file_get_contents(DATA_URL, false,
+        stream_context_create(array(
+            "ssl"=>array(
+                "verify_peer"      => false,
+                "verify_peer_name" => false,
+            ),
+        )
+    )));
 
     // Fix/improve data
     if(!is_null($cps)) {
@@ -76,6 +83,24 @@ function fetch() {
                 $cp->cper = 'p0';
             }
             $cp->icon = $cp->cper . '.png';
+
+            // Sometimes location is missing
+            if(!property_exists($cp, "location")) {
+
+                // Hard coded locations as missing from data store
+                if($cp->name == "Podium CP") {
+                    $cp->location = array(
+                        "latitude"  => "51.384322",
+                        "longitude" => "-2.359572"
+                    );
+                }
+                if($cp->name == "Newbridge P+R") {
+                    $cp->location = array(
+                        "latitude"  => "51.390423",
+                        "longitude" => "-2.405904"
+                    );
+                }
+            }
         }
     }
 
